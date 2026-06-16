@@ -1,0 +1,93 @@
+papka MainWindow.xaml
+ file MainWindow.xaml.cs
+
+
+<Window x:Class="GusevDE.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GusevDE"
+        mc:Ignorable="d" Style="{StaticResource Windows}"
+        Title="Авторизация" Height="450" Width="800">
+    <Grid>
+
+        <Border VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel Margin="60 20">
+
+                <TextBlock Text="Авторизация"
+                           Margin="40 10"/>
+                 
+                <TextBox Name="LoginEnter"
+                         Margin="10 10"/>
+                <PasswordBox Name="PasswordEnter"
+                             Margin="10 10"/>
+                <Button Name="LoginButton"
+                        Content="Войти"
+                        Margin="70 10"
+                        Click="LogInButton_Click"/>
+                <TextBlock HorizontalAlignment="Center"
+                           Text="Войти как гость"
+                           FontSize="15"
+                           Foreground="Blue"
+                           MouseDown="TextBlock_MouseDown"/>
+            </StackPanel>
+        </Border>
+        
+    </Grid>
+</Window>
+
+
+
+---------------------------------------------
+
+
+
+using GusevDE.Helpers;
+using GusevDE.Statics;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
+
+namespace GusevDE
+{
+    /// <summary>
+    /// Логика взаимодействия для MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        private GusevDEEntities _db = new GusevDEEntities();
+        private MessageHelper _mh = new MessageHelper();
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void LogInButton_Click(object sender, RoutedEventArgs e)
+        {
+            string login = LoginEnter.Text;
+            string password = PasswordEnter.Password;
+
+            var user = _db.User.Where(u => u.Login == login && u.Password == password).FirstOrDefault();
+
+            if (user == null)
+            {
+                _mh.ShowError("Введён не правильный логин или пароль!");
+                    return;
+            }
+            else
+            {
+                CurrentSession.CurrentUser = user;
+                new ProductWindow(user).Show();
+                Close();
+            }
+        }
+
+        private void TextBlock_MouseDown(object sender,MouseButtonEventArgs e)
+        {
+            new ProductWindow().Show();
+            Close();
+        }
+    }
+}

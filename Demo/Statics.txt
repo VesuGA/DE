@@ -1,0 +1,16 @@
+Создаётся папка Statics 
+	CurrentSession.cs
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GusevDE.Statics
+{
+    internal class CurrentSession
+    {
+        public static User CurrentUser { get; set; }
+    }
+}
